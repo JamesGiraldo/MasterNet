@@ -1,244 +1,55 @@
-using System.Collections.Frozen;
-using System.Globalization;
-using System.Security.Claims;
 using MasterNet.Domain.Entities;
-using MasterNet.Persistence.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Collections.Frozen;
+using System.Globalization;
 
 namespace MasterNet.Persistence;
 
 public static class SeedDatabase
 {
-
-    public static async Task SeedRolesAndUsersAsync(
-     UserManager<User> userManager,
-     RoleManager<IdentityRole> roleManager,
-     ILogger? logger,
-     CancellationToken cancellationToken
+    /// <summary>
+    /// Crea los roles <see cref="CustomRole.ADMIN"/> y <see cref="CustomRole.CLIENT"/> si no existen.
+    /// Los métodos de seed de datos de demostración (JSON) permanecen disponibles para ejecución manual.
+    /// </summary>
+    public static async Task SeedInitialRolesAsync(
+        RoleManager<IdentityRole> roleManager,
+        ILogger? logger
     )
     {
         try
         {
-            if (userManager.Users.Any()) return;
-
-            var adminId = Guid.NewGuid().ToString();
-            var clientId = Guid.NewGuid().ToString();
-
-            var roleAdmin = new IdentityRole
-            {
-                Id = adminId,
-                Name = CustomRole.ADMIN,
-                NormalizedName = CustomRole.ADMIN.ToUpperInvariant(),
-            };
-
-            var roleClient = new IdentityRole
-            {
-                Id = clientId,
-                Name = CustomRole.CLIENT,
-                NormalizedName = CustomRole.CLIENT.ToUpperInvariant(),
-            };
-
             if (!await roleManager.RoleExistsAsync(CustomRole.ADMIN))
             {
-                await roleManager.CreateAsync(roleAdmin);
+                var result = await roleManager.CreateAsync(new IdentityRole(CustomRole.ADMIN));
+                if (!result.Succeeded)
+                {
+                    throw new InvalidOperationException(
+                        string.Join("; ", result.Errors.Select(e => e.Description))
+                    );
+                }
             }
 
             if (!await roleManager.RoleExistsAsync(CustomRole.CLIENT))
             {
-                await roleManager.CreateAsync(roleClient);
+                var result = await roleManager.CreateAsync(new IdentityRole(CustomRole.CLIENT));
+                if (!result.Succeeded)
+                {
+                    throw new InvalidOperationException(
+                        string.Join("; ", result.Errors.Select(e => e.Description))
+                    );
+                }
             }
 
-            var userAdmin = new User
-            {
-                Name = "Vaxi Developer",
-                LastName = "Vaxi Developer",
-                Email = "vaxi.developer@yopmail.com",
-                UserName = "vaxi.developer@yopmail.com",
-                PhoneNumber = "+573152274804",
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow,
-            };
-
-            await userManager.CreateAsync(userAdmin, "Admin123*");
-
-            var userClient = new User
-            {
-                Name = "Vaxi Client",
-                LastName = "Vaxi Client",
-                Email = "vaxi.client@yopmail.com",
-                UserName = "vaxi.client@yopmail.com",
-                PhoneNumber = "+573152274804",
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow,
-            };
-
-            await userManager.CreateAsync(userClient, "Client123*");
-
-            // Add roles to user
-            await userManager.AddToRoleAsync(userAdmin, CustomRole.ADMIN);
-            await userManager.AddToRoleAsync(userClient, CustomRole.CLIENT);
-
-            // Add role policies
-            await roleManager
-                .AddClaimAsync(
-                    roleAdmin,
-                        new Claim(CustomClaim.POLICIES, PolicyMaster.COURSE_READ)
-                    );
-
-            await roleManager
-                .AddClaimAsync(
-                    roleAdmin,
-                        new Claim(CustomClaim.POLICIES, PolicyMaster.COURSE_WRITE)
-                    );
-
-            await roleManager
-                .AddClaimAsync(
-                    roleAdmin,
-                        new Claim(CustomClaim.POLICIES, PolicyMaster.COURSE_UPDATE)
-                    );
-
-            await roleManager
-                .AddClaimAsync(
-                    roleAdmin,
-                        new Claim(CustomClaim.POLICIES, PolicyMaster.COURSE_DELETE)
-                    );
-
-            await roleManager
-                .AddClaimAsync(
-                    roleAdmin,
-                        new Claim(CustomClaim.POLICIES, PolicyMaster.COURSE_CREATE)
-                    );
-
-            await roleManager
-                .AddClaimAsync(
-                    roleAdmin,
-                        new Claim(CustomClaim.POLICIES, PolicyMaster.INSTRUCTOR_READ)
-                    );
-
-            await roleManager
-                .AddClaimAsync(
-                    roleAdmin,
-                        new Claim(CustomClaim.POLICIES, PolicyMaster.INSTRUCTOR_WRITE)
-                    );
-
-            await roleManager
-                .AddClaimAsync(
-                    roleAdmin,
-                        new Claim(CustomClaim.POLICIES, PolicyMaster.INSTRUCTOR_UPDATE)
-                    );
-
-            await roleManager
-                .AddClaimAsync(
-                    roleAdmin,
-                        new Claim(CustomClaim.POLICIES, PolicyMaster.INSTRUCTOR_DELETE)
-                    );
-
-            await roleManager
-                .AddClaimAsync(
-                    roleAdmin,
-                        new Claim(CustomClaim.POLICIES, PolicyMaster.INSTRUCTOR_CREATE)
-                    );
-
-            await roleManager
-                .AddClaimAsync(
-                    roleAdmin,
-                        new Claim(CustomClaim.POLICIES, PolicyMaster.PRICE_READ)
-                    );
-
-            await roleManager
-                .AddClaimAsync(
-                    roleAdmin,
-                        new Claim(CustomClaim.POLICIES, PolicyMaster.PRICE_WRITE)
-                    );
-
-            await roleManager
-                .AddClaimAsync(
-                    roleAdmin,
-                        new Claim(CustomClaim.POLICIES, PolicyMaster.PRICE_UPDATE)
-                    );
-
-            await roleManager
-                .AddClaimAsync(
-                    roleAdmin,
-                        new Claim(CustomClaim.POLICIES, PolicyMaster.PRICE_DELETE)
-                    );
-
-            await roleManager
-                .AddClaimAsync(
-                    roleAdmin,
-                        new Claim(CustomClaim.POLICIES, PolicyMaster.PRICE_CREATE)
-                    );
-
-            await roleManager
-                .AddClaimAsync(
-                    roleAdmin,
-                        new Claim(CustomClaim.POLICIES, PolicyMaster.COMMENT_READ)
-                    );
-
-            await roleManager
-                .AddClaimAsync(
-                    roleAdmin,
-                        new Claim(CustomClaim.POLICIES, PolicyMaster.COMMENT_WRITE)
-                    );
-
-            await roleManager
-                .AddClaimAsync(
-                    roleAdmin,
-                        new Claim(CustomClaim.POLICIES, PolicyMaster.COMMENT_UPDATE)
-                    );
-
-            await roleManager
-                .AddClaimAsync(
-                    roleAdmin,
-                        new Claim(CustomClaim.POLICIES, PolicyMaster.COMMENT_DELETE)
-                    );
-
-            await roleManager
-                .AddClaimAsync(
-                    roleAdmin,
-                        new Claim(CustomClaim.POLICIES, PolicyMaster.COMMENT_CREATE)
-                    );
-
-            await roleManager
-                .AddClaimAsync(
-                    roleClient,
-                    new Claim(CustomClaim.POLICIES, PolicyMaster.COURSE_READ)
-                );
-
-            await roleManager
-                .AddClaimAsync(
-                    roleClient,
-                    new Claim(CustomClaim.POLICIES, PolicyMaster.INSTRUCTOR_READ)
-                );
-
-            await roleManager
-                .AddClaimAsync(
-                    roleClient,
-                    new Claim(CustomClaim.POLICIES, PolicyMaster.COMMENT_READ)
-                );
-
-            await roleManager
-                .AddClaimAsync(
-                    roleClient,
-                    new Claim(CustomClaim.POLICIES, PolicyMaster.PRICE_READ)
-                );
-
-            await roleManager
-                .AddClaimAsync(
-                    roleClient,
-                    new Claim(CustomClaim.POLICIES, PolicyMaster.COMMENT_CREATE)
-                );
-
-            logger?.LogInformation("Roles y usuarios sembrados correctamente");
+            logger?.LogInformation("Roles iniciales ADMIN y CLIENT verificados");
         }
         catch (Exception ex)
         {
-            logger?.LogWarning(ex, "Error al sembrar los roles y usuarios: {ErrorMessage}", ex.Message);
-            throw new Exception("Error al sembrar los roles y usuarios", ex);
-            throw;
+            logger?.LogWarning(ex, "Error al sembrar roles: {ErrorMessage}", ex.Message);
+            throw new InvalidOperationException("Error al sembrar los roles iniciales", ex);
         }
     }
 

@@ -1,16 +1,15 @@
+using MasterNet.Application.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using MasterNet.Domain.Entities;
-using Microsoft.Extensions.Logging;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using MasterNet.Persistence.Models;
 
 namespace MasterNet.Persistence;
 
-public class MasterNetDbContext : IdentityDbContext<User>
+public class MasterNetDbContext : IdentityDbContext<User>, IApplicationDbContext
 {
 
-    public DbSet<Course>? Courses { get; set; }
+    public DbSet<Course> Courses { get; set; } = null!;
     public DbSet<Instructor>? Instructors { get; set; }
     public DbSet<Photo>? Photos { get; set; }
     public DbSet<Price>? Prices { get; set; }
@@ -18,48 +17,6 @@ public class MasterNetDbContext : IdentityDbContext<User>
 
     public MasterNetDbContext() { }
     public MasterNetDbContext(DbContextOptions<MasterNetDbContext> options) : base(options) { }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=masternet1;Username=postgres;Password=postgres")
-            .EnableDetailedErrors()
-            .LogTo(Console.WriteLine, LogLevel.Information)
-            .EnableSensitiveDataLogging()
-            .UseAsyncSeeding(async (context, status, cancellationToken) =>
-                {
-                    var masterNetDbContext = (MasterNetDbContext)context;
-                    var logger = context.GetService<ILogger<MasterNetDbContext>>();
-                    try
-                    {
-                        await SeedDatabase.SeedPricesAsync(
-                            masterNetDbContext,
-                            logger,
-                            cancellationToken
-                        );
-                        await SeedDatabase.SeedInstructorsAsync(
-                            masterNetDbContext,
-                            logger,
-                            cancellationToken
-                        );
-                        await SeedDatabase.SeedCoursesAsync(
-                            masterNetDbContext,
-                            logger,
-                            cancellationToken
-                        );
-                        await SeedDatabase.SeedQualificationsAsync(
-                            masterNetDbContext,
-                            logger,
-                            cancellationToken
-                        );
-                    }
-                    catch (Exception ex)
-                    {
-                        logger?.LogError(ex, "Error en el seeding: {ErrorMessage}", ex.Message);
-                        throw new Exception("Error en el seeding", ex);
-                    }
-                }
-            );
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

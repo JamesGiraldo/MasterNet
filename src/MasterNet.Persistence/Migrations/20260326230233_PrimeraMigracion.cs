@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MasterNet.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class SegurityEfCore : Migration
+    public partial class PrimeraMigracion : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

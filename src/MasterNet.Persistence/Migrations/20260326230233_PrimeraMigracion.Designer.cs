@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MasterNet.Persistence.Migrations
 {
     [DbContext(typeof(MasterNetDbContext))]
-    [Migration("20260325215145_SegurityEfCore")]
-    partial class SegurityEfCore
+    [Migration("20260326230233_PrimeraMigracion")]
+    partial class PrimeraMigracion
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
