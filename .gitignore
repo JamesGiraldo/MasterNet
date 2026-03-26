@@ -1,0 +1,19 @@
+# Build folders
+bin/
+obj/
+
+# Rider / Jetbrains
+.idea/
+
+# VS Code
+.vscode/
+
+# User files
+*.user
+*.suo
+
+# Logs
+*.log
+
+# OS
+.DS_Store
