@@ -1,3 +1,4 @@
+using MasterNet.Application.Core;
 using MasterNet.Application.Courses.CourseCreate;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -30,13 +31,12 @@ public class CourseController : ControllerBase
     }
 
     [HttpPost("create")]
-    public async Task<ActionResult<Guid>> CursoCreate(
+    public async Task<ActionResult<Result<Guid>>> CursoCreate(
         [FromForm] CourseCreateRequest request,
         CancellationToken cancellationToken
     )
     {
         var command = new CourseCreateCommandRequest(request);
-        var resultado = await _sender.Send(command, cancellationToken);
-        return Ok(resultado);
+        return await _sender.Send(command, cancellationToken);
     }
 }
