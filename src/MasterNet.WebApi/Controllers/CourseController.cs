@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using static MasterNet.Application.Courses.CourseCreate.CourseCreateCommand;
 using static MasterNet.Application.Courses.CourseReportExcel.CourseReportExcelQuery;
+using MasterNet.Application.Courses.CourseGet;
 
 namespace MasterNet.WebApi.Controllers;
 
@@ -16,6 +17,15 @@ public class CourseController : ControllerBase
     public CourseController(ISender sender)
     {
         _sender = sender;
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult> CourseGet(Guid id, CancellationToken cancellationToken)
+    {
+        var query = new CourseGetQuery.CourseGetQueryRequest { Id = id };
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.IsSuccess ? Ok(result.Data) : BadRequest(result.Error);
     }
 
     [HttpGet("report-excel")]
