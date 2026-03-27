@@ -2,6 +2,7 @@ using MediatR;
 using MasterNet.Application.Abstractions;
 using MasterNet.Domain.Entities;
 using MasterNet.Application.Core;
+using FluentValidation;
 
 namespace MasterNet.Application.Courses.CourseCreate;
 
@@ -14,7 +15,6 @@ public class CourseCreateCommand
     internal class CourseCreateCommandHandler
         : IRequestHandler<CourseCreateCommandRequest, Result<Guid>>
     {
-
         private readonly IApplicationDbContext _context;
 
         public CourseCreateCommandHandler(IApplicationDbContext context)
@@ -45,6 +45,17 @@ public class CourseCreateCommand
             }
 
             return Result<Guid>.Success(course.Id);
+        }
+
+    }
+
+    public class CourseCreateCommandRequestValidator
+        : AbstractValidator<CourseCreateCommandRequest>
+    {
+        public CourseCreateCommandRequestValidator()
+        {
+            RuleFor(x => x.courseCreateRequest)
+                .SetValidator(new CourseCreateValidator());
         }
     }
 }
