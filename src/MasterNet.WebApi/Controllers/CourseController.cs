@@ -2,6 +2,7 @@ using MasterNet.Application.Courses.CourseCreate;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using static MasterNet.Application.Courses.CourseCreate.CourseCreateCommand;
+using static MasterNet.Application.Courses.CourseReportExcel.CourseReportExcelQuery;
 
 namespace MasterNet.WebApi.Controllers;
 
@@ -14,6 +15,18 @@ public class CourseController : ControllerBase
     public CourseController(ISender sender)
     {
         _sender = sender;
+    }
+
+    [HttpGet("report-excel")]
+    public async Task<IActionResult> CourseReportExcel(
+        CancellationToken cancellationToken
+    )
+    {
+        var query = new CourseReportExcelQueryRequest();
+        var result = await _sender.Send(query, cancellationToken);
+
+        byte[] excelBytes = result.ToArray();
+        return File(excelBytes, "text/csv", "courses.csv");
     }
 
     [HttpPost("create")]

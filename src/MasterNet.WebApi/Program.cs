@@ -1,4 +1,5 @@
 using MasterNet.Application;
+using MasterNet.Infrastructure;
 using MasterNet.Persistence;
 using MasterNet.Persistence.Models;
 using MasterNet.WebApi.Extensions;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddApplication();
+builder.Services.AddInfrastructure();
 builder.Services.AddPersistence(builder.Configuration);
 
 builder.Services

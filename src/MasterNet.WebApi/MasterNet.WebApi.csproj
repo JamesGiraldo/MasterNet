@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MasterNet.Application\MasterNet.Application.csproj" />
+    <ProjectReference Include="..\MasterNet.Infrastructure\MasterNet.Infrastructure.csproj" />
     <ProjectReference Include="..\MasterNet.Persistence\MasterNet.Persistence.csproj" />
   </ItemGroup>
 
