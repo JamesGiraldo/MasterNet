@@ -39,14 +39,10 @@ public class CourseCreateCommand
             _context.Courses.Add(course);
             var result = await _context.SaveChangesAsync(cancellationToken) > 0;
 
-            if (!result)
-            {
-                return Result<Guid>.Failure("Failed to create course");
-            }
-
-            return Result<Guid>.Success(course.Id);
+            return result
+                ? Result<Guid>.Success(course.Id)
+                : Result<Guid>.Failure("Failed to create course");
         }
-
     }
 
     public class CourseCreateCommandRequestValidator

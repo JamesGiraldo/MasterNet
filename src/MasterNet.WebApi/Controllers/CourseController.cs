@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using static MasterNet.Application.Courses.CourseCreate.CourseCreateCommand;
 using static MasterNet.Application.Courses.CourseReportExcel.CourseReportExcelQuery;
 using MasterNet.Application.Courses.CourseGet;
+using MasterNet.Application.Courses.CoursesGet;
 
 namespace MasterNet.WebApi.Controllers;
 
@@ -17,6 +18,18 @@ public class CourseController : ControllerBase
     public CourseController(ISender sender)
     {
         _sender = sender;
+    }
+
+    [HttpGet]
+    public async Task<ActionResult> CourseGetAll(
+        [FromQuery] GetCoursesRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var query = new CoursesGetQuery.CoursesGetQueryRequest { CoursesRequest = request };
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.IsSuccess ? Ok(result.Data) : BadRequest(result.Error);
     }
 
     [HttpGet("{id}")]
