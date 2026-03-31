@@ -89,7 +89,6 @@ public class CoursesGetQuery
             );
 
             return Result<PagedList<CourseResponse>>.Success(pagination);
-
         }
     }
 
