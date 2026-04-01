@@ -1,9 +1,10 @@
-using MediatR;
-using MasterNet.Application.Abstractions;
-using MasterNet.Domain.Entities;
-using MasterNet.Application.Core;
 using FluentValidation;
+using MasterNet.Application.Abstractions;
+using MasterNet.Application.Core;
 using MasterNet.Application.Interfaces;
+using MasterNet.Domain.Entities;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace MasterNet.Application.Courses.CourseCreate;
 
@@ -59,6 +60,22 @@ public class CourseCreateCommand
                 };
 
                 course.Photos = new List<Photo> { photo };
+            }
+
+            if (request.courseCreateRequest.InstructorId != null)
+            {
+                var instructor = _context.Instructors.FirstOrDefault(x => x.Id == request.courseCreateRequest.InstructorId);
+                if (instructor is null) return Result<Guid>.Failure("Instructor not found");
+
+                course.Instructors = new List<Instructor> { instructor };
+            }
+
+            if (request.courseCreateRequest.PriceId != null)
+            {
+                var price = await _context.Prices.FirstOrDefaultAsync(x => x.Id == request.courseCreateRequest.PriceId);
+                if (price is null) return Result<Guid>.Failure("Price not found");
+
+                course.Prices = new List<Price> { price };
             }
 
             _context.Courses.Add(course);
