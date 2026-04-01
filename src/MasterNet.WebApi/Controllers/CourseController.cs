@@ -6,6 +6,8 @@ using static MasterNet.Application.Courses.CourseCreate.CourseCreateCommand;
 using static MasterNet.Application.Courses.CourseReportExcel.CourseReportExcelQuery;
 using MasterNet.Application.Courses.CourseGet;
 using MasterNet.Application.Courses.CoursesGet;
+using MasterNet.Application.Courses.CourseUpdate;
+using MasterNet.Application.Courses.CourseDelete;
 
 namespace MasterNet.WebApi.Controllers;
 
@@ -61,5 +63,25 @@ public class CourseController : ControllerBase
     {
         var command = new CourseCreateCommandRequest(request);
         return await _sender.Send(command, cancellationToken);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult<Result<Guid>>> CourseUpdate(
+        [FromBody] CourseUpdateRequest request,
+        Guid id,
+        CancellationToken cancellationToken
+    )
+    {
+        var command = new CourseUpdateCommand.CourseUpdateCommandRequest(request, id);
+        var result = await _sender.Send(command, cancellationToken);
+        return result.IsSuccess ? Ok(result.Data) : BadRequest(result.Error);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<Result<Unit>>> CourseDelete(Guid id, CancellationToken cancellationToken)
+    {
+        var command = new CurseDeteleCommand.CourseDeleteCommandRequest(CourseId: id);
+        var result = await _sender.Send(command, cancellationToken);
+        return result.IsSuccess ? Ok(result.Data) : BadRequest(result.Error);
     }
 }
