@@ -24,7 +24,13 @@ public class CurseDeteleCommand
             CancellationToken cancellationToken
         )
         {
-            var course = await _context.Courses.FirstOrDefaultAsync(x => x.Id == request.CourseId);
+            var course = await _context.Courses
+                .Include(x => x.Instructors)
+                .Include(x => x.Photos)
+                .Include(x => x.Prices)
+                .Include(x => x.Qualifications)
+                .FirstOrDefaultAsync(x => x.Id == request.CourseId);
+
             if (course is null) return Result<Unit>.Failure("Course Not Found");
 
             _context.Courses.Remove(course);
