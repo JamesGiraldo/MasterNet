@@ -10,10 +10,10 @@ public class MasterNetDbContext : IdentityDbContext<User>, IApplicationDbContext
 {
 
     public DbSet<Course> Courses { get; set; } = null!;
-    public DbSet<Instructor>? Instructors { get; set; }
-    public DbSet<Photo>? Photos { get; set; }
-    public DbSet<Price>? Prices { get; set; }
-    public DbSet<Qualification>? Qualifications { get; set; }
+    public DbSet<Instructor> Instructors { get; set; } = null!;
+    public DbSet<Photo> Photos { get; set; } = null!;
+    public DbSet<Price> Prices { get; set; } = null!;
+    public DbSet<Qualification> Qualifications { get; set; } = null!;
 
     public MasterNetDbContext() { }
     public MasterNetDbContext(DbContextOptions<MasterNetDbContext> options) : base(options) { }
