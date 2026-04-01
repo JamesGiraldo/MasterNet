@@ -39,7 +39,8 @@ public class CoursesGetQuery
             IQueryable<Course> queryable = _context.Courses!
                                             .Include(x => x.Instructors)
                                             .Include(x => x.Qualifications)
-                                            .Include(x => x.Prices);
+                                            .Include(x => x.Prices)
+                                            .Include(x => x.Photos);
 
             var predicate = ExpressionBuilder.New<Course>();
             if (!string.IsNullOrEmpty(request.CoursesRequest!.Title))
