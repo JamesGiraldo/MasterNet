@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using static MasterNet.Application.Qualifications.QualificationsGet.QualificationsGetQuery;
 using MasterNet.Application.Qualifications.QualificationsGet;
+using System.Net;
 
 namespace MasterNet.WebApi.Controllers;
 
@@ -18,7 +19,9 @@ public class QuialificationController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult> QuialificationsGetAll(
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+    public async Task<ActionResult<PagedList<QualificationResponse>>> QuialificationsGetAll(
         [FromQuery] QualificationsGetRequest request,
         CancellationToken cancellationToken
     )

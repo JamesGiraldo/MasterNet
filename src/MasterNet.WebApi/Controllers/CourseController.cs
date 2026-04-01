@@ -8,6 +8,8 @@ using MasterNet.Application.Courses.CourseGet;
 using MasterNet.Application.Courses.CoursesGet;
 using MasterNet.Application.Courses.CourseUpdate;
 using MasterNet.Application.Courses.CourseDelete;
+using System.Net;
+
 
 namespace MasterNet.WebApi.Controllers;
 
@@ -23,7 +25,9 @@ public class CourseController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult> CourseGetAll(
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+    public async Task<ActionResult<PagedList<CourseResponse>>> CourseGetAll(
         [FromQuery] GetCoursesRequest request,
         CancellationToken cancellationToken
     )
@@ -35,15 +39,19 @@ public class CourseController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult> CourseGet(Guid id, CancellationToken cancellationToken)
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+    public async Task<ActionResult<Result<CourseResponse>>> CourseGet(Guid id, CancellationToken cancellationToken)
     {
         var query = new CourseGetQuery.CourseGetQueryRequest { Id = id };
         var result = await _sender.Send(query, cancellationToken);
 
-        return result.IsSuccess ? Ok(result.Data) : BadRequest(result.Error);
+        return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
     }
 
     [HttpGet("report-excel")]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
     public async Task<IActionResult> CourseReportExcel(
         CancellationToken cancellationToken
     )
@@ -56,16 +64,21 @@ public class CourseController : ControllerBase
     }
 
     [HttpPost("create")]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
     public async Task<ActionResult<Result<Guid>>> CursoCreate(
         [FromForm] CourseCreateRequest request,
         CancellationToken cancellationToken
     )
     {
         var command = new CourseCreateCommandRequest(request);
-        return await _sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
+        return result.IsSuccess ? Ok(result.Data) : BadRequest(result.Error);
     }
 
     [HttpPut("{id}")]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
     public async Task<ActionResult<Result<Guid>>> CourseUpdate(
         [FromBody] CourseUpdateRequest request,
         Guid id,
@@ -78,6 +91,8 @@ public class CourseController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
     public async Task<ActionResult<Result<Unit>>> CourseDelete(Guid id, CancellationToken cancellationToken)
     {
         var command = new CurseDeteleCommand.CourseDeleteCommandRequest(CourseId: id);

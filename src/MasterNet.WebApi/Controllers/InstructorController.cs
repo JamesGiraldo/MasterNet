@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using static MasterNet.Application.Instructors.InstructorsGet.InstructorsGetQuery;
 using MasterNet.Application.Instructors.InstructorsGet;
+using System.Net;
 
 namespace MasterNet.WebApi.Controllers;
 
@@ -18,7 +19,9 @@ public class InstructorsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult> InstructorsGetAll(
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+    public async Task<ActionResult<PagedList<InstructorResponse>>> InstructorsGetAll(
         [FromQuery] InstructorsGetRequest request,
         CancellationToken cancellationToken
     )

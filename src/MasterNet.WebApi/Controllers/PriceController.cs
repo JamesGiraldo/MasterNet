@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using static MasterNet.Application.Prices.PricesGet.PricesGetQuery;
 using MasterNet.Application.Prices.PricesGet;
+using System.Net;
 
 namespace MasterNet.WebApi.Controllers;
 
@@ -18,7 +19,9 @@ public class PriceController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult> PricesGetAll(
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+    public async Task<ActionResult<PagedList<PriceResponse>>> PricesGetAll(
         [FromQuery] PricesGetRequest request,
         CancellationToken cancellationToken
     )
