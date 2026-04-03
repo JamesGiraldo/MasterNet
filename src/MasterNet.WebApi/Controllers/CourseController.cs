@@ -1,19 +1,19 @@
 using MasterNet.Application.Core;
 using MasterNet.Application.Courses.CourseCreate;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using static MasterNet.Application.Courses.CourseCreate.CourseCreateCommand;
-using static MasterNet.Application.Courses.CourseReportExcel.CourseReportExcelQuery;
+using MasterNet.Application.Courses.CourseDelete;
 using MasterNet.Application.Courses.CourseGet;
 using MasterNet.Application.Courses.CoursesGet;
 using MasterNet.Application.Courses.CourseUpdate;
-using MasterNet.Application.Courses.CourseDelete;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using static MasterNet.Application.Courses.CourseCreate.CourseCreateCommand;
+using static MasterNet.Application.Courses.CourseReportExcel.CourseReportExcelQuery;
 using System.Net;
 
-
 namespace MasterNet.WebApi.Controllers;
-
 [ApiController]
+[Authorize]
 [Route("api/courses")]
 public class CourseController : ControllerBase
 {

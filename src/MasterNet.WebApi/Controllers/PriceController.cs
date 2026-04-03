@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 using static MasterNet.Application.Prices.PricesGet.PricesGetQuery;
 using MasterNet.Application.Prices.PricesGet;
 using System.Net;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MasterNet.WebApi.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/prices")]
 public class PriceController : ControllerBase
 {

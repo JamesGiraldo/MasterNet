@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 using static MasterNet.Application.Qualifications.QualificationsGet.QualificationsGetQuery;
 using MasterNet.Application.Qualifications.QualificationsGet;
 using System.Net;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MasterNet.WebApi.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/qualifications")]
 public class QuialificationController : ControllerBase
 {

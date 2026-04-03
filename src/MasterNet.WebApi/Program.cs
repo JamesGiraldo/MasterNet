@@ -19,28 +19,21 @@ builder.Services.AddScoped<IPhotoService, PhotoService>();
 
 builder.Services.AddHttpContextAccessor();
 
-
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 builder.Services.AddOpenApi();
+builder.Services.AddSwaggerServices();
 
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionMiddleware>();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwaggerDocumentation();
 
+await app.SeedDataAuthenticationAsync();
+app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-await app.SeedDataAuthenticationAsync();
-
-app.UseHttpsRedirection();
 app.MapControllers();
-
 app.Run();

@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 using static MasterNet.Application.Instructors.InstructorsGet.InstructorsGetQuery;
 using MasterNet.Application.Instructors.InstructorsGet;
 using System.Net;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MasterNet.WebApi.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/instructors")]
 public class InstructorsController : ControllerBase
 {
