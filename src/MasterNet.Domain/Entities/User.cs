@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace MasterNet.Persistence.Models;
+namespace MasterNet.Domain.Entities;
 
 public class User : IdentityUser
 {

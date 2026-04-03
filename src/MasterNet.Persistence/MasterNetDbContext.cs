@@ -2,12 +2,12 @@ using MasterNet.Application.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using MasterNet.Domain.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using MasterNet.Persistence.Models;
 
 namespace MasterNet.Persistence;
 
 public class MasterNetDbContext : IdentityDbContext<User>, IApplicationDbContext
 {
+    public MasterNetDbContext(DbContextOptions<MasterNetDbContext> options) : base(options) { }
 
     public DbSet<Course> Courses { get; set; } = null!;
     public DbSet<Instructor> Instructors { get; set; } = null!;
@@ -16,7 +16,6 @@ public class MasterNetDbContext : IdentityDbContext<User>, IApplicationDbContext
     public DbSet<Qualification> Qualifications { get; set; } = null!;
 
     public MasterNetDbContext() { }
-    public MasterNetDbContext(DbContextOptions<MasterNetDbContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
